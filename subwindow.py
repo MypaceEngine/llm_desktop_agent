@@ -112,6 +112,57 @@ class SubWindow():
                 on_click=roleExpandCtl
             )
 
+            def close_dlg(e):
+                dlg_modal.open = False
+                page.update()
+            dlg_modal = flet.AlertDialog(
+                modal=True,
+                # title=flet.Text("Please confirm"),
+                content=flet.DataTable(
+                    columns=[
+                        flet.DataColumn(flet.Text("First name")),
+                        flet.DataColumn(flet.Text("Last name")),
+                        flet.DataColumn(flet.Text("Age"), numeric=True),
+                    ],
+                    rows=[
+                        flet.DataRow(
+                            cells=[
+                                flet.DataCell(flet.Text("John")),
+                                flet.DataCell(flet.Text("Smith")),
+                                flet.DataCell(flet.Text("43")),
+                            ],
+                        ),
+                        flet.DataRow(
+                            cells=[
+                                flet.DataCell(flet.Text("Jack")),
+                                flet.DataCell(flet.Text("Brown")),
+                                flet.DataCell(flet.Text("19")),
+                            ],
+                        ),
+                        flet.DataRow(
+                            cells=[
+                                flet.DataCell(flet.Text("Alice")),
+                                flet.DataCell(flet.Text("Wong")),
+                                flet.DataCell(flet.Text("25")),
+                            ],
+                        ),
+                    ],
+                ),
+                actions=[
+                    flet.TextButton("Yes", on_click=close_dlg),
+                    flet.TextButton("No", on_click=close_dlg),
+                ],
+                actions_alignment=flet.MainAxisAlignment.END,
+                on_dismiss=lambda e: print("Modal dialog dismissed!"),
+            )
+
+            def open_dlg_modal(e):
+                page.dialog = dlg_modal
+                dlg_modal.open = True
+                page.update()
+            roleSelectBtn = flet.FilledButton(on_click=open_dlg_modal,
+                                              text="ロール選択")
+
             def roleExpandCtlEx(e):
                 visiblew = not roleTextField.visible
                 chgroleExpand(visiblew)
@@ -119,9 +170,11 @@ class SubWindow():
             def chgroleExpand(visiblew):
                 if visiblew:
                     roleTextField.visible = visiblew
+                    roleSelectBtn.visible = visiblew
                     roleIcon.icon = flet.icons.EXPAND_MORE
                 else:
                     roleTextField.visible = visiblew
+                    roleSelectBtn.visible = visiblew
                     roleIcon.icon = flet.icons.EXPAND_LESS
                 page.update()
 
@@ -177,8 +230,13 @@ class SubWindow():
                 content=flet.Column(expand=True,
                                     controls=[
                                         flet.Card(content=flet.Column(horizontal_alignment=flet.CrossAxisAlignment.START, expand=False, controls=[
-                                            flet.Row(controls=[roleIcon, flet.FilledButton(on_click=deleteTab,
-                                                                      text="このチャットを削除"),]),
+                                            flet.Row(controls=[roleIcon,
+                                                               roleSelectBtn,
+
+                                                               flet.Container(
+                                                                   expand=True),
+                                                               flet.FilledButton(on_click=deleteTab,
+                                                                                 text="削除"),]),
                                             roleTextField
                                         ]
 
